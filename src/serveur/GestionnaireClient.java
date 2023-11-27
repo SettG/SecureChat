@@ -1,12 +1,12 @@
 package serveur;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.Socket;
+import java.security.Key;
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.HashMap;
+
 
 public class GestionnaireClient implements Runnable {
 
@@ -16,6 +16,7 @@ public class GestionnaireClient implements Runnable {
     private Socket socket;
     private BufferedReader bufferreader;
     private BufferedWriter bufferwriter;
+    private HashMap<String,Key> dictionnaireDeCle=new HashMap<>();
 
 
     public GestionnaireClient(Socket socket) {
@@ -25,12 +26,21 @@ public class GestionnaireClient implements Runnable {
             this.bufferwriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             this.bufferreader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.username = bufferreader.readLine();
+
+            // Utiliser ObjectInputStream pour recevoir l'objet clé
+            ObjectInputStream objectInputStream = new ObjectInputStream(this.socket.getInputStream());
+            Key key = (Key) objectInputStream.readObject();
+
+            this.dictionnaireDeCle.put(this.username,key);
+
             gestClient.add(this);
             messagedeConnection("Serveur : " + this.username + " : " + "est arrivé sur le serveur");
 
 
         } catch (IOException e) {
             fermer(socket, bufferreader, bufferwriter);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
 
     }

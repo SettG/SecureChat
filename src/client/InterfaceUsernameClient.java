@@ -41,7 +41,7 @@ public class InterfaceUsernameClient extends JFrame implements ActionListener {
     public String messtoSend = new String();
     public String messtoAffiche;
     private Socket sock;
-    private String ip = "localhost";
+    private String ip = "192.168.43.69";
 
     public InterfaceUsernameClient() throws UnsupportedLookAndFeelException {
         super("Interface de connection");

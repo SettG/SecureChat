@@ -4,6 +4,7 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class NewJFrame extends javax.swing.JFrame implements ActionListener {
     String username;
     Socket socket;
 
-    public NewJFrame(BufferedWriter bufferWriter, BufferedReader bufferReader, String username, Socket socket) {
+    public NewJFrame(ObjectOutputStream objectOutputStream, BufferedWriter bufferWriter, BufferedReader bufferReader, String username, Socket socket) {
         this.bufferWriter = bufferWriter;
         this.username = username;
         this.socket = socket;

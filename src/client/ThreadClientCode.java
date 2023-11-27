@@ -1,14 +1,12 @@
 package client;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
+import javax.crypto.* ;
+import java.security.* ;
 
 public class ThreadClientCode {
 
@@ -17,6 +15,12 @@ public class ThreadClientCode {
     private BufferedReader bufferReader;
     private BufferedWriter bufferWriter;
     private NewJFrame jf;
+
+    private byte[] data;
+    private byte[] result;
+    private byte[] original;
+
+    private ObjectOutputStream objectOutputStream;
 
     public ThreadClientCode(Socket socket, String username) {
         try {
@@ -27,11 +31,20 @@ public class ThreadClientCode {
             bufferWriter.write(username);
             bufferWriter.newLine();
             bufferWriter.flush();
+
+            KeyGenerator kg = KeyGenerator.getInstance("AES");
+            Key key = kg.generateKey();
+
+            objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+
+            // Envoyer la clé au serveur
+            envoyerCle(key);
+
             this.recevoirMessage();
-        } catch (IOException e) {
+        } catch (IOException | NoSuchAlgorithmException e) {
             fermer(socket, bufferReader, bufferWriter);
         }
-        this.jf = new NewJFrame(bufferWriter, bufferReader, username, socket);
+        this.jf = new NewJFrame(objectOutputStream,bufferWriter, bufferReader, username, socket);
         jf.setVisible(true);
     }
 
@@ -44,6 +57,7 @@ public class ThreadClientCode {
                 String message;
                 while (socket.isConnected()) {
                     try {
+
                         message = bufferReader.readLine();
                         if (message != null) {
                             String[] data = message.split(",");
@@ -83,5 +97,18 @@ public class ThreadClientCode {
 
     public static void main(String[] args) throws UnknownHostException, IOException, UnsupportedLookAndFeelException {
         UIManager.setLookAndFeel(new NimbusLookAndFeel());
+    }
+
+
+    // Nouvelle méthode pour envoyer la clé au serveur
+    private void envoyerCle(Key key) {
+        try {
+            // Utiliser ObjectOutputStream pour envoyer l'objet clé
+            objectOutputStream.writeObject(key);
+            objectOutputStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+            fermer(socket, bufferReader, bufferWriter);
+        }
     }
 }
