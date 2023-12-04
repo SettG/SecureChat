@@ -1,4 +1,5 @@
 package client;
+
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -52,13 +53,19 @@ public class ThreadClientCode {
 
     public void recevoirMessage() {
         new Thread(new Runnable() {
+
             @Override
             public void run() {
                 String message;
                 while (socket.isConnected()) {
                     try {
 
-                        message = bufferReader.readLine();
+                        ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
+                        byte[] result = (byte[]) objectInputStream.readObject();
+                        Cipher cipher= Cipher.getInstance("AES");
+                        Key key = (Key) objectInputStream.readObject();
+                        cipher.init(Cipher.DECRYPT_MODE, key);
+                        message = new String(cipher.doFinal(result));
                         if (message != null) {
                             String[] data = message.split(",");
                             if (data[0].equals("$*£/$585£%/*55954%")) {
@@ -73,6 +80,18 @@ public class ThreadClientCode {
                         }
                     } catch (IOException e) {
                         fermer(socket, bufferReader, bufferWriter);
+                    } catch (ClassNotFoundException e) {
+                        throw new RuntimeException(e);
+                    } catch (NoSuchPaddingException e) {
+                        throw new RuntimeException(e);
+                    } catch (NoSuchAlgorithmException e) {
+                        throw new RuntimeException(e);
+                    } catch (InvalidKeyException e) {
+                        throw new RuntimeException(e);
+                    } catch (IllegalBlockSizeException e) {
+                        throw new RuntimeException(e);
+                    } catch (BadPaddingException e) {
+                        throw new RuntimeException(e);
                     }
                 }
             }

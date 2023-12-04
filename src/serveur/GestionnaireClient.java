@@ -1,8 +1,14 @@
 package serveur;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.*;
 import java.net.Socket;
+import java.security.InvalidKeyException;
 import java.security.Key;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -75,13 +81,29 @@ public class GestionnaireClient implements Runnable {
         for (GestionnaireClient client : gestClient) {
             try {
                 if (!client.username.equals(username)) {
-                    client.bufferwriter.write(message);
-                    client.bufferwriter.newLine();
-                    client.bufferwriter.flush();
+                    Key key = dictionnaireDeCle.get(this.username);
+                    Cipher cipher = Cipher.getInstance("AES");
+                    cipher.init(Cipher.ENCRYPT_MODE, key);
+                    byte[] data = message.getBytes();
+                    byte[] result = cipher.doFinal(data);
+                    ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+                    objectOutputStream.writeObject(result);
+                    objectOutputStream.writeObject(key);
+                    objectOutputStream.flush();
 
                 }
             } catch (IOException e) {
                 fermer(socket, bufferreader, bufferwriter);
+            } catch (NoSuchPaddingException e) {
+                throw new RuntimeException(e);
+            } catch (IllegalBlockSizeException e) {
+                throw new RuntimeException(e);
+            } catch (NoSuchAlgorithmException e) {
+                throw new RuntimeException(e);
+            } catch (BadPaddingException e) {
+                throw new RuntimeException(e);
+            } catch (InvalidKeyException e) {
+                throw new RuntimeException(e);
             }
         }
     }
