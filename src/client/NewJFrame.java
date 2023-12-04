@@ -60,7 +60,7 @@ public class NewJFrame extends javax.swing.JFrame implements ActionListener {
         areauser.setRows(5);
         jScrollPane1.setViewportView(areauser);
 
-        deconnection.setText("Déconnection");
+        deconnection.setText("Déconnexion");
         deconnection.addActionListener(this);
         deconnection.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
