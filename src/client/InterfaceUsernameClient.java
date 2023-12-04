@@ -23,7 +23,7 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 public class InterfaceUsernameClient extends JFrame implements ActionListener {
 
     private static final long serialVersionUID = 1L;
-    private String file = ("monde.png");
+    private String file = ("monde.jpg");
     private JTextField txtEdit = new JTextField("Entrez votre username");
     private JTextField zoneEntree = new JTextField("");
     private JTextField PORT = new JTextField("Entrez le port de connexion");
@@ -35,13 +35,10 @@ public class InterfaceUsernameClient extends JFrame implements ActionListener {
     private JLabel background;
     private JLabel port;
     public JTextArea area;
-    public ImageIcon image;
-    public String pathToFile = ("/test.png");
     private static InterfaceUsernameClient i;
     public String messtoSend = new String();
-    public String messtoAffiche;
     private Socket sock;
-    private String ip = "192.168.43.69";
+    private String ip = "localhost";
 
     public InterfaceUsernameClient() throws UnsupportedLookAndFeelException {
         super("Interface de connection");
@@ -59,7 +56,6 @@ public class InterfaceUsernameClient extends JFrame implements ActionListener {
         this.setLocationRelativeTo(null);
         JPanel contentPane = (JPanel) this.getContentPane();
         contentPane.setLayout(null);
-
         this.button.setBounds(21, 206, 160, 30);
         contentPane.add(this.button);
         this.button.addActionListener(this);
@@ -90,6 +86,7 @@ public class InterfaceUsernameClient extends JFrame implements ActionListener {
         this.port.setFont(new Font("italic", Font.ITALIC, 12));
 
         contentPane.add(this.background);
+
 
     }
 
