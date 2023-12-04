@@ -11,7 +11,6 @@ import java.util.HashMap;
 public class GestionnaireClient implements Runnable {
 
     public static ArrayList<GestionnaireClient> gestClient = new ArrayList<>();
-
     private String username;
     private Socket socket;
     private BufferedReader bufferreader;
