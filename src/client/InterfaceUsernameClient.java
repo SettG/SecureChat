@@ -67,7 +67,17 @@ public class InterfaceUsernameClient extends JFrame implements ActionListener {
         this.PORT.setBounds(21, 89, 199, 30);
         this.PORT.addActionListener(this);
         contentPane.add(this.PORT);
-
+        // suprimmer le texte quand on clique sur le contentPane
+        this.PORT.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                PORT.setText("");
+            }
+        });
+        this.txtEdit.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txtEdit.setText("");
+            }
+        });
         this.background = new JLabel(this.back, JLabel.CENTER);
         this.background.setBounds(0, 0, 600, 400);
 
