@@ -33,16 +33,16 @@ public class ThreadClientCode {
             bufferWriter.newLine();
             bufferWriter.flush();
 
-            KeyGenerator kg = KeyGenerator.getInstance("AES");
-            Key key = kg.generateKey();
+            //KeyGenerator kg = KeyGenerator.getInstance("AES");
+            //Key key = kg.generateKey();
 
-            objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+            //objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
 
             // Envoyer la clé au serveur
-            envoyerCle(key);
+            //envoyerCle(key);
 
             this.recevoirMessage();
-        } catch (IOException | NoSuchAlgorithmException e) {
+        } catch (IOException e) {
             fermer(socket, bufferReader, bufferWriter);
         }
         this.jf = new NewJFrame(objectOutputStream,bufferWriter, bufferReader, username, socket);
@@ -60,12 +60,14 @@ public class ThreadClientCode {
                 while (socket.isConnected()) {
                     try {
 
-                        ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
-                        byte[] result = (byte[]) objectInputStream.readObject();
-                        Cipher cipher= Cipher.getInstance("AES");
-                        Key key = (Key) objectInputStream.readObject();
-                        cipher.init(Cipher.DECRYPT_MODE, key);
-                        message = new String(cipher.doFinal(result));
+                        //ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
+                        //byte[] result = (byte[]) objectInputStream.readObject();
+                        //Cipher cipher= Cipher.getInstance("AES");
+                        //Key key = (Key) objectInputStream.readObject();
+                        //cipher.init(Cipher.DECRYPT_MODE, key);
+                        //message = new String(cipher.doFinal(result));
+                        //System.out.println(message);
+                        message = bufferReader.readLine();
                         if (message != null) {
                             String[] data = message.split(",");
                             if (data[0].equals("$*£/$585£%/*55954%")) {
@@ -80,18 +82,6 @@ public class ThreadClientCode {
                         }
                     } catch (IOException e) {
                         fermer(socket, bufferReader, bufferWriter);
-                    } catch (ClassNotFoundException e) {
-                        throw new RuntimeException(e);
-                    } catch (NoSuchPaddingException e) {
-                        throw new RuntimeException(e);
-                    } catch (NoSuchAlgorithmException e) {
-                        throw new RuntimeException(e);
-                    } catch (InvalidKeyException e) {
-                        throw new RuntimeException(e);
-                    } catch (IllegalBlockSizeException e) {
-                        throw new RuntimeException(e);
-                    } catch (BadPaddingException e) {
-                        throw new RuntimeException(e);
                     }
                 }
             }

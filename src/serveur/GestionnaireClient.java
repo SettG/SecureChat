@@ -33,10 +33,11 @@ public class GestionnaireClient implements Runnable {
             this.username = bufferreader.readLine();
 
             // Utiliser ObjectInputStream pour recevoir l'objet clé
-            ObjectInputStream objectInputStream = new ObjectInputStream(this.socket.getInputStream());
-            Key key = (Key) objectInputStream.readObject();
 
-            this.dictionnaireDeCle.put(this.username,key);
+            //ObjectInputStream objectInputStream = new ObjectInputStream(this.socket.getInputStream());
+            //Key key = (Key) objectInputStream.readObject();
+
+            //this.dictionnaireDeCle.put(this.username,key);
 
             gestClient.add(this);
             messagedeConnection("Serveur : " + this.username + " : " + "est arrivé sur le serveur");
@@ -44,8 +45,6 @@ public class GestionnaireClient implements Runnable {
 
         } catch (IOException e) {
             fermer(socket, bufferreader, bufferwriter);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
         }
 
     }
@@ -81,28 +80,21 @@ public class GestionnaireClient implements Runnable {
         for (GestionnaireClient client : gestClient) {
             try {
                 if (!client.username.equals(username)) {
-                    Key key = dictionnaireDeCle.get(this.username);
-                    Cipher cipher = Cipher.getInstance("AES");
-                    cipher.init(Cipher.ENCRYPT_MODE, key);
-                    byte[] data = message.getBytes();
-                    byte[] result = cipher.doFinal(data);
-                    ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-                    objectOutputStream.writeObject(result);
-                    objectOutputStream.writeObject(key);
-                    objectOutputStream.flush();
+                    //Key key = dictionnaireDeCle.get(this.username);
+                    //Cipher cipher = Cipher.getInstance("AES");
+                    //cipher.init(Cipher.ENCRYPT_MODE, key);
+                    //byte[] data = message.getBytes();
+                    //byte[] result = cipher.doFinal(data);
+                    //ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+                    //objectOutputStream.writeObject(result);
+                    //objectOutputStream.writeObject(key);
+                    //objectOutputStream.flush();
+                    client.bufferwriter.write(message);
+                    client.bufferwriter.newLine();
+                    client.bufferwriter.flush();
 
                 }
             } catch (IOException e) {
-                fermer(socket, bufferreader, bufferwriter);
-            } catch (NoSuchPaddingException e) {
-                throw new RuntimeException(e);
-            } catch (IllegalBlockSizeException e) {
-                throw new RuntimeException(e);
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException(e);
-            } catch (BadPaddingException e) {
-                throw new RuntimeException(e);
-            } catch (InvalidKeyException e) {
                 throw new RuntimeException(e);
             }
         }
